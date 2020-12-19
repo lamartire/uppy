@@ -4,6 +4,7 @@ const Instagram = require('@uppy/instagram/src')
 const Facebook = require('@uppy/facebook/src')
 const OneDrive = require('@uppy/onedrive/src')
 const Dropbox = require('@uppy/dropbox/src')
+const Box = require('@uppy/box/src')
 const GoogleDrive = require('@uppy/google-drive/src')
 const Unsplash = require('@uppy/unsplash/src')
 const Zoom = require('@uppy/zoom/src')
@@ -30,7 +31,7 @@ const UPLOADER = 'tus'
 // DEV CONFIG: Endpoint URLs
 
 const COMPANION_URL = 'http://localhost:3020'
-const TUS_ENDPOINT = 'https://master.tus.io/files/'
+const TUS_ENDPOINT = 'https://tusd.tusdemo.net/files/'
 const XHR_ENDPOINT = 'https://xhr-server.herokuapp.com/upload'
 
 // DEV CONFIG: Transloadit keys
@@ -67,6 +68,7 @@ module.exports = () => {
     .use(GoogleDrive, { target: Dashboard, companionUrl: COMPANION_URL })
     .use(Instagram, { target: Dashboard, companionUrl: COMPANION_URL })
     .use(Dropbox, { target: Dashboard, companionUrl: COMPANION_URL })
+    .use(Box, { target: Dashboard, companionUrl: COMPANION_URL })
     .use(Facebook, { target: Dashboard, companionUrl: COMPANION_URL })
     .use(OneDrive, { target: Dashboard, companionUrl: COMPANION_URL })
     .use(Zoom, { target: Dashboard, companionUrl: COMPANION_URL })

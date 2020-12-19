@@ -80,6 +80,10 @@ uppy.use(Dashboard, {
   hidePauseResumeButton: false,
   hideCancelButton: false,
   hideProgressAfterFinish: false,
+  doneButtonHandler: () => {
+    this.uppy.reset()
+    this.requestCloseModal()
+  },
   note: null,
   closeModalOnClickOutside: false,
   closeAfterFinish: false,
@@ -95,7 +99,8 @@ uppy.use(Dashboard, {
   showRemoveButtonAfterComplete: false,
   locale: defaultLocale,
   browserBackButtonClose: false,
-  theme: 'light'
+  theme: 'light',
+  autoOpenFileEditor: false
 })
 ```
 
@@ -183,6 +188,19 @@ Use this if you are providing a custom retry button somewhere, and using the `up
 ### `hideProgressAfterFinish: false`
 
 Hide Status Bar after the upload has finished.
+
+### `doneButtonHandler`
+
+This option is passed to the StatusBar, and will render a “Done” button in place of pause/resume/cancel buttons, once the upload/encoding is done. The behaviour of this “Done” button is defined by the handler function — can be used to close file picker modals or clear the upload state. This is what the Dashboard sets by default:
+
+```js
+doneButtonHandler: () => {
+  this.uppy.reset()
+  this.requestCloseModal()
+}
+```
+
+Set to `null` to disable the “Done” button.
 
 ### `showSelectedFiles: true`
 
@@ -393,11 +411,18 @@ Remove all children of the `target` element before mounting the Dashboard. By de
 Uppy Dashboard supports “Dark Mode”. You can try it live on [the Dashboard example page](https://uppy.io/examples/dashboard/).
 
 There are three options:
+
 - `light` — the default
 - `dark`
 - `auto` — will respect the user’s system settings and switch automatically
 
 ![Uppy dark mode screenshot](/images/uppy-dashboard-dark-mar-2020.png)
+
+### `autoOpenFileEditor: false`
+
+Automatically open file editor (see [`@uppy/image-editor`](/docs/image-editor/)) for the first file in a batch. If one file is added, editor opens for that file, if 10 files are added — editor opens for the first file.
+
+Use case: user adds an image — Uppy opens Image Editor right away — user crops / adjusts the image — upload.
 
 ## Methods
 
