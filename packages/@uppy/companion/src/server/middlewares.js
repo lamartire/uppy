@@ -1,5 +1,6 @@
 const tokenService = require('./helpers/jwt')
 const logger = require('./logger')
+const uniq = require('lodash/uniq')
 
 exports.hasSessionAndProvider = (req, res, next) => {
   if (!req.session || !req.body) {
@@ -31,7 +32,7 @@ exports.verifyToken = (req, res, next) => {
     return res.sendStatus(401)
   }
   const providerName = req.params.providerName
-  const { err, payload } = tokenService.verifyToken(token, req.companion.options.secret)
+  const { err, payload } = tokenService.verifyEncryptedToken(token, req.companion.options.secret)
   if (err || !payload[providerName]) {
     if (err) {
       logger.error(err, 'token.verify.error', req.id)
@@ -47,7 +48,7 @@ exports.verifyToken = (req, res, next) => {
 exports.gentleVerifyToken = (req, res, next) => {
   const providerName = req.params.providerName
   if (req.companion.authToken) {
-    const { err, payload } = tokenService.verifyToken(req.companion.authToken, req.companion.options.secret)
+    const { err, payload } = tokenService.verifyEncryptedToken(req.companion.authToken, req.companion.options.secret)
     if (!err && payload[providerName]) {
       req.companion.providerTokens = payload
     }
@@ -69,5 +70,18 @@ exports.loadSearchProviderToken = (req, res, next) => {
   }
 
   req.companion.providerToken = searchProviders[providerName].key
+  next()
+}
+
+exports.mergeAccessControlAllowMethods = (req, res, next) => {
+  const existingHeader = res.get('Access-Control-Allow-Methods')
+  let existingMethods = []
+  if (existingHeader) {
+    existingMethods = existingHeader.replace(/\s/g, '').split(',').map((method) => method.toUpperCase())
+  }
+
+  const mergedMethods = uniq([...existingMethods, 'GET', 'POST', 'OPTIONS', 'DELETE'])
+
+  res.header('Access-Control-Allow-Methods', mergedMethods.join(','))
   next()
 }
